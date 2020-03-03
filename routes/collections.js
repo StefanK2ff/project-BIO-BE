@@ -78,10 +78,10 @@ router.patch("/id/:collectionId", isLoggedIn, async (req, res, next) => {
 
 //DETELE a colelction by ID
 router.delete("/id/:collectionId", isLoggedIn, async (req, res, next) => {
-    const { collectionId} = req.params;
+    const collectionId = req.params.collectionId;
     try {
-        const result = await Collection.findByIdAndDelete({_id: collectionId})
-        res.status(204)
+        await Collection.findByIdAndRemove({_id: collectionId})
+        res.status(204).json({})
     } 
     catch (error) {
         next(createError(error)); 
