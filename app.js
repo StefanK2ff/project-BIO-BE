@@ -19,7 +19,7 @@ mongoose
     useNewUrlParser: true,
     reconnectTries: Number.MAX_VALUE,
   })
-  .then( () => console.log(`Connected to database`))
+  .then( () => console.log(`Connected to database - ${process.env.MONGODB_URI}`))
   .catch( (err) => console.error(err));
 
 
