@@ -53,7 +53,6 @@ router.post('/login', isNotLoggedIn, validationLogin, async (req, res, next) => 
       res
         .status(200)
         .json(user);
-    //return;	 			TODO - remove from the notes
     } 
     else {
       next(createError(401));	// Unauthorized
