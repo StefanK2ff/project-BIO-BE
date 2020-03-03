@@ -66,9 +66,9 @@ router.get("/id/:collectionId", isLoggedIn, async (req, res, next) => {
 //PATCH a collection by ID
 router.patch("/id/:collectionId", isLoggedIn, async (req, res, next) => {
     const { collectionId } = req.params;
-    const { itemsList, name} = req.body;
+    const { items, name} = req.body;
     try {
-        const result = await Collection.findByIdAndUpdate({_id: collectionId}, {items: itemsList, name: name})
+        const result = await Collection.findByIdAndUpdate({_id: collectionId}, {$set: {items: items}, name: name})
         res.status(200).json({result})
     } 
     catch (error) {
