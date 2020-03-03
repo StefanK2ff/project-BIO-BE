@@ -45,7 +45,7 @@ router.post('/login', isNotLoggedIn, validationLogin, async (req, res, next) => 
     const user = await User.findOne({ email }) ;
     if (!user) {
       next(createError(404));
-    } 
+      } 
     else if (bcrypt.compareSync(password, user.password)) {
       
       user.password = '*';
@@ -53,7 +53,7 @@ router.post('/login', isNotLoggedIn, validationLogin, async (req, res, next) => 
       res
         .status(200)
         .json(user);
-    } 
+      } 
     else {
       next(createError(401));	// Unauthorized
     }
