@@ -15,19 +15,9 @@ const {
 router.get("/user/:userId", isLoggedIn, async (req, res, next) => {
   const { userId } = req.params;
   try {
-    const collections = await Collection.find({
+    let collections = await Collection.find({
       owner: userId
     });
-    if (collections.length < 1) {
-      await Collection.create({
-        name: "myBooks",
-        owner: userId,
-        items: []
-      });
-      collections = await Collection.find({
-        owner: userId
-      });
-    }
     res.status(200).json(collections);
   } catch (error) {
     next(createError(error));

@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const User = require("../models/user");
+const Collection = require ("../models/collections")
 
 // HELPER FUNCTIONS
 const {
@@ -20,16 +21,26 @@ router.post('/signup', isNotLoggedIn, validationLogin, async (req, res, next) =>
     const emailExists = await User.findOne({ email }, 'email');
     
     if (emailExists) return next(createError(400));
-    else {
+    else { //create the user
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashPass = bcrypt.hashSync(password, salt);
       const newUser = await User.create({ email, password: hashPass });
 
       newUser.password = "*";
-      req.session.currentUser = newUser;
-      res
-        .status(201)  //  Created
-        .json(newUser);
+      // create a default collection for the user
+        try {
+            const defaultCollection = await Collection.create({
+                name: "#MyItems",
+                items: [],
+                owner: newUser._id
+            })
+            // connect newNewser with collection ID
+            const createdUser = (await User.findByIdAndUpdate({_id: newUser._id}, {$addToSet: {collections: defaultCollection._id}}))
+            res.status(201).json({defaultCollection, createdUser });
+        }
+        catch (error) {
+        next(createError(error));
+        }
     }
   } 
   catch (error) {
