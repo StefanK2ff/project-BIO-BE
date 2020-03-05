@@ -31,7 +31,8 @@ router.post("/", isLoggedIn, async (req, res, next) => {
         const newCollection = await Collection.create({
             name,
             items,
-            owner
+            owner,
+            default: true,
         })
         const updatedUserCollections = (await User.findByIdAndUpdate({_id: owner}, {$addToSet: {collections: newCollection._id}})).collections
         res.status(201).json({newCollection, updatedUserCollections});

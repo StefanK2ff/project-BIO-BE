@@ -53,12 +53,11 @@ router.post('/signup', isNotLoggedIn, validationLogin, async (req, res, next) =>
 router.post('/login', isNotLoggedIn, validationLogin, async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email }) ;
+    const user = await User.findOne({ email }).populate("collections") ;
     if (!user) {
       next(createError(404));
       } 
     else if (bcrypt.compareSync(password, user.password)) {
-      
       user.password = '*';
       req.session.currentUser = user;
       res
