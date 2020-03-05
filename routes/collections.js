@@ -54,8 +54,9 @@ router.get("/id/:collectionId", isLoggedIn, async (req, res, next) => {
     }
 });
 
-//PATCH a collection by ID
-router.patch("/id/:collectionId", isLoggedIn, async (req, res, next) => {
+//PATCH / UPDATE a collection by ID
+router.patch("/id/:collectionId", async (req, res, next) => {
+    console.log(req.session.currentUser)
     const { collectionId } = req.params;
     const { items, name} = req.body;
     try {
@@ -67,7 +68,7 @@ router.patch("/id/:collectionId", isLoggedIn, async (req, res, next) => {
     }
 })
 
-//DETELE a colelction by ID
+//DETELE a collection by ID
 router.delete("/id/:collectionId", isLoggedIn, async (req, res, next) => {
     const collectionId = req.params.collectionId;
     try {
