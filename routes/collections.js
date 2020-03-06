@@ -25,7 +25,7 @@ router.get("/user/:userId", isLoggedIn, async (req, res, next) => {
 });
 
 //POST a new collection and add it to a user
-router.post("/", isLoggedIn, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
     const {owner, items, name} = req.body
     try {
         const newCollection = await Collection.create({
