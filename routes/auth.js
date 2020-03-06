@@ -13,6 +13,27 @@ const {
   validationLogin
 } = require("../helpers/middlewares");
 
+///auth/refresh/5e60fa91076c53411d04f974
+// GET Userdate to refresh state
+router.get("/refresh/:userid", isLoggedIn, async (req, res, next) => {
+  const { userid } = req.params
+  console.log(userid, "from params")
+  try {
+    const user = await (await User.findById(userid).populate("collections")).execPopulate();
+    if (!user) {
+      next(createError(404));
+    } else if (user){
+      user.password = "*";
+      //req.session.currentUser = user;
+      res.status(200).json(user);
+    } else {
+      next(createError(401)); // Unauthorized
+    }
+  } catch (error) {
+    next(createError(error));
+  }
+})
+
 // POST '/auth/signup'
 router.post(
   "/signup",
@@ -41,13 +62,17 @@ router.post(
             default: true,
             owner: newUser._id
           });
-          // connect new User with collection ID
-          const createdUser = await User.findByIdAndUpdate(
-            { _id: newUser._id },
-            { $addToSet: { collections: defaultCollection._id } }
-          );
-          req.session.currentUser = createdUser;
-          res.status(201).json({ defaultCollection, createdUser });
+          try {
+            // connect new User with collection ID
+            const createdUser = await User.findByIdAndUpdate(
+              { _id: newUser._id },
+              { $addToSet: { collections: defaultCollection._id } }
+            );
+            req.session.currentUser = createdUser;
+            res.status(201).json(createdUser);
+          } catch (error) {
+            next(createError(error));
+          }
         
       }
     } catch (error) {
@@ -79,26 +104,6 @@ router.post(
     }
   }
 );
-///auth/refresh/5e60fa91076c53411d04f974
-// GET Userdate to refresh state
-router.get("/refresh/:userid"), isLoggedIn, async (req, res, next) => {
-  const { userid } = req.params
-  consolog.lo(userid, "from params")
-  try {
-    const user = await User.findById(userid).populate("collections");
-    if (!user) {
-      next(createError(404));
-    } else if (user){
-      user.password = "*";
-      req.session.currentUser = user;
-      res.status(200).json(user);
-    } else {
-      next(createError(401)); // Unauthorized
-    }
-  } catch (error) {
-    next(createError(error));
-  }
-}
 
 // POST '/auth/logout'
 router.post("/logout", isLoggedIn, (req, res, next) => {

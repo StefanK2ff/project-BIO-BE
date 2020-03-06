@@ -56,11 +56,12 @@ router.get("/id/:collectionId", isLoggedIn, async (req, res, next) => {
 
 //PATCH / UPDATE a collection by ID
 router.patch("/id/:collectionId", async (req, res, next) => {
-    console.log(req.session.currentUser)
     const { collectionId } = req.params;
     const { items, name} = req.body;
+    console.log("given item in BE ", items)
     try {
-        const result = await Collection.findByIdAndUpdate({_id: collectionId}, {$set: {items: items}, name: name})
+        const result = await Collection.findByIdAndUpdate({_id: collectionId}, {$set: {items: items}, name: name}) // <-- possible fix of SET
+        console.log("result nach update DB ", result)
         res.status(200).json({result})
     } 
     catch (error) {
