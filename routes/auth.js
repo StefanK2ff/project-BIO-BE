@@ -57,7 +57,7 @@ router.post(
         // create a default collection for the user
         
           const defaultCollection = await Collection.create({
-            name: "#MyItems",
+            name: "MyItems",
             items: [],
             default: true,
             owner: newUser._id
