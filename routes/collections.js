@@ -32,7 +32,7 @@ router.post("/", async (req, res, next) => {
             name,
             items,
             owner,
-            default: true,
+            default: false,
         })
         const updatedUserCollections = (await User.findByIdAndUpdate({_id: owner}, {$addToSet: {collections: newCollection._id}})).collections
         res.status(201).json({newCollection, updatedUserCollections});
@@ -58,7 +58,6 @@ router.get("/id/:collectionId", isLoggedIn, async (req, res, next) => {
 router.patch("/id/:collectionId", async (req, res, next) => {
     const { collectionId } = req.params;
     const { items, name} = req.body;
-    console.log("given item in BE ", items)
     try {
         const result = await Collection.findByIdAndUpdate({_id: collectionId}, {$set: {items: items}, name: name}) // <-- possible fix of SET
         console.log("result nach update DB ", result)
@@ -70,11 +69,12 @@ router.patch("/id/:collectionId", async (req, res, next) => {
 })
 
 //DETELE a collection by ID
-router.delete("/id/:collectionId", isLoggedIn, async (req, res, next) => {
+router.delete("/id/:collectionId", async (req, res, next) => {
     const collectionId = req.params.collectionId;
+    console.log(collectionId, "coll ID from DELETE")
     try {
         await Collection.findByIdAndRemove({_id: collectionId})
-        res.status(204).json({})
+        res.status(204)
     } 
     catch (error) {
         next(createError(error)); 

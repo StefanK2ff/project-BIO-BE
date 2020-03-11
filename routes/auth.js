@@ -17,7 +17,7 @@ const {
 // GET Userdate to refresh state
 router.get("/refresh/:userid", isLoggedIn, async (req, res, next) => {
   const { userid } = req.params
-  console.log(userid, "from params")
+  console.log(userid, "User from params (REFRESH)")
   try {
     const user = await (await User.findById(userid).populate("collections")).execPopulate();
     if (!user) {
